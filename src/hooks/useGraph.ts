@@ -1,35 +1,25 @@
-import {useAppDispatch} from "./useAppDispatch";
-import {useAppSelector} from "./useAppSelector";
+import { useAppDispatch } from "./useAppDispatch"
+import { useAppSelector } from "./useAppSelector"
 
-import {
-    setNodes as setNodesAction,
-    setEdges as setEdgesAction,
-} from "@/store/slices/graphSlice.ts";
+import { actions } from "@/store/slices/graphSlice.ts"
 
-import {
-    type NodeType,
-    type EdgeType
-} from "@/schemas";
-
+import { useMemo } from 'react'
+import { bindActionCreators } from '@reduxjs/toolkit'
 
 export const useGraph = () => {
-    const dispatch = useAppDispatch();
+    const dispatch = useAppDispatch()
 
-    const nodes = useAppSelector((state) => state.graph.nodes);
-    const edges = useAppSelector((state) => state.graph.edges);
+    const nodes = useAppSelector((state) => state.graph.nodes)
+    const edges = useAppSelector((state) => state.graph.edges)
 
-    const setNodes = (newNodes: NodeType[]) => {
-        dispatch(setNodesAction(newNodes));
-    };
-
-    const setEdges = (newEdges: EdgeType[]) => {
-        dispatch(setEdgesAction(newEdges));
-    };
+    const boundActionCreators = useMemo(
+        () => bindActionCreators(actions, dispatch),
+        [dispatch]
+    )
 
     return {
         nodes,
         edges,
-        setNodes,
-        setEdges,
-    };
+        ...boundActionCreators
+    }
 }
