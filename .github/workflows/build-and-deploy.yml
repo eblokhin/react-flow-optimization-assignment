@@ -49,6 +49,6 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: eugene_runet/public_html/
-          local-dir: ./dist/
+          local-dir: ./build/
           state-name: ./.sync-state.json
           dry-run: true
