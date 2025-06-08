@@ -77,18 +77,16 @@ const graphSlice = createSlice({
 
       state.edges = newEdges;
     },
-    /** @deprecated не используется */
     setNodes: (state, action: PayloadAction<NodeType[]>) => {
       state.nodes = action.payload;
     },
-    /** @deprecated не используется */
     setEdges: (state, action: PayloadAction<EdgeType[]>) => {
       state.edges = action.payload;
     },
     setNodesChanges: (state, action: PayloadAction<NodeChange<NodeType>[]>) => {
       state.nodes = applyNodeChanges<NodeType>(action.payload, state.nodes);
     },
-    setEdgeChanges: (
+    setEdgesChanges: (
       state,
       action: PayloadAction<EdgeChange<EdgeType>[]>
     ) => {
