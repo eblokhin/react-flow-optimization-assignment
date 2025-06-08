@@ -22,9 +22,6 @@ jobs:
     
     - name: Build
       run: yarn build
-
-    - name: Debug private key
-      run: echo ${{secrets.SSH_PRIVATE_KEY }} | sed 's/./& /g'
     
     - name: Install SSH Key
       uses: shimataro/ssh-key-action@v2
