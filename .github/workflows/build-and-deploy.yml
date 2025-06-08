@@ -42,10 +42,13 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R
 
-      # - name: Deploy to Hosting
-      #   uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-      #   with:
-      #     server: ${{ secrets.FTP_HOST }}
-      #     username: ${{ secrets.FTP_USER }}
-      #     password: ${{ secrets.FTP_PASSWORD }}
-      #     server-dir: eugene_runet/public_html/
+      - name: Deploy to Hosting
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: eugene_runet/public_html/
+          local-dir: ./dist/
+          state-name: ./.sync-state.json
+          dry-run: true
