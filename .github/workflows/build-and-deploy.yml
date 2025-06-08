@@ -4,9 +4,8 @@ on:
   workflow_dispatch
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    environment: production
     
     steps:
     - uses: actions/checkout@v4
@@ -22,12 +21,28 @@ jobs:
     
     - name: Build
       run: yarn build
-    
-    - name: Install SSH Key
-      uses: shimataro/ssh-key-action@v2
+
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v4
       with:
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
-    
-    - name: Deploy to server
-      run:  rsync -avz ./dist/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/c/${{ secrets.SSH_USER }}/eugene_runet/public_html
+        name: build
+        path: ./dist
+        retention-days: 1
+        overwrite: true
+  
+  deploy-production:
+    runs-on: ubuntu-latest
+    environment: production
+    needs: build 
+
+    steps:
+      - name: 'Download artifact'
+        uses: actions/download-artifact@v4
+
+      - name: Deploy to Hosting
+        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /home/c/${{ secrets.FTP_USER }}/eugene_runet/public_html
