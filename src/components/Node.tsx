@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import {
     Handle,
@@ -11,16 +11,28 @@ import {
 } from "@/schemas";
 import DictionaryTable from "@/components/DictTable.tsx";
 
+// Rerender будет происходить на каждое изменения состояния ноды
+// Для оптимизации нутрянку можно обернуть в memo, а props'ы декомпозировать на нужные
+const NodeWrapper: React.FC<NodeProps<NodeType>> = (props) => {
+    return <Node id={props.id} selected={props.selected} displayName={props.data.displayName} values={props.data.values}  />
+}
 
-const Node: React.FC<NodeProps<NodeType>> = (props) => {
-
+const Node: React.FC<{
+    id: string
+    selected: boolean
+    displayName: string
+    values: Record<string, number>
+}> = memo((props) => {
     const {
-        data,
+        id,
+        values,
+        displayName,
         selected
     } = props;
 
     return (
         <div
+            id={id}
             style={{
                 border: selected ? "2px solid #0070f3" : "2px solid #c1c1c1",
                 borderRadius: "10px",
@@ -33,7 +45,7 @@ const Node: React.FC<NodeProps<NodeType>> = (props) => {
             }}
         >
             <div style={{ marginBottom: "10px" }}>
-                <strong>{data.displayName}</strong>
+                <strong>{displayName}</strong>
             </div>
             <div>
                 <Handle
@@ -45,9 +57,9 @@ const Node: React.FC<NodeProps<NodeType>> = (props) => {
                     position={Position.Right}
                 />
             </div>
-            <DictionaryTable data={data.values}/>
+            <DictionaryTable data={values}/>
         </div>
     )
-}
+})
 
-export default Node;
+export default NodeWrapper;

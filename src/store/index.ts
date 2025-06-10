@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 
-import graphReducer from './slices/graphSlice';
+import { reducer as graphReducer } from './slices/graphSlice';
 
 
 const rootReducer = combineReducers({

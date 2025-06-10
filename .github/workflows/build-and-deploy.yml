@@ -42,9 +42,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build
+          path: ./dist
 
       - name: Display structure of downloaded files
-        run: ls -R
+        run: ls -R ./dist
 
       - name: Deploy to Hosting
         env:

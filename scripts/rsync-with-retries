@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# requires SSH_PRIVATE_KEY, SSH_KNOWN_HOSTS, REMOTE_USER, REMOTE_HOST, REMOTE_PATH 
+
+# Set up SSH
+mkdir -p ~/.ssh
+echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+chmod 600 ~/.ssh/id_rsa
+
+echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+chmod 600 ~/.ssh/known_hosts
+
+SCRIPT_DIR=$(dirname "$0")
+
+# Retry function
+function rsync_with_retry {
+  local retries=3
+  local count=0
+  local success=false
+
+  echo "Rsync start"
+  until [ $count -ge $retries ]; do
+    rsync -avz -e "ssh -o ConnectTimeout=10 -o ServerAliveInterval=60" \
+      $SCRIPT_DIR/../dist/ $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH && \
+      success=true && break
+      
+    count=$((count+1))
+    echo "Rsync failed. Retry attempt $count of $retries..."
+    sleep 5
+  done
+    
+  if [ "$success" = false ]; then
+    echo "Rsync failed after $retries attempts"
+    exit 1
+  fi
+}
+
+# Execute with retries
+rsync_with_retry

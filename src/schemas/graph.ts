@@ -6,10 +6,10 @@ import {
 
 export interface NodeData {
     displayName: string;
-    values: Record<string, any>;
+    values: Record<string, number>;
 
     [key: string]: unknown;
-}
+};
 
 export type NodeType = XYNode<NodeData, "custom">;
 
@@ -17,4 +17,4 @@ export interface EdgeData {
     [key: string]: unknown;
 }
 
-export type EdgeType = XYEdge<NodeData, "custom">;
+export type EdgeType = XYEdge<EdgeData, "custom">;
