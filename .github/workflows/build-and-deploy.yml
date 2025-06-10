@@ -38,17 +38,18 @@ jobs:
     steps:
       - name: 'Download artifact'
         uses: actions/download-artifact@v4
+        with:
+          name: build
 
       - name: Display structure of downloaded files
         run: ls -R
 
       - name: Deploy to Hosting
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: eugene_runet/public_html/
-          local-dir: ./build/
-          state-name: ./.sync-state.json
-          dry-run: true
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_PATH: ${{ secrets.REMOTE_PATH }}
+        run: ./scripts/rsync-with-retries
+        
